@@ -7,9 +7,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Quotation {
     @Getter @Setter
-    int quoteID;
+    private int quoteID;
     @Getter @Setter
-    String writer;
+    private String writer;
     @Getter @Setter
-    String content;
+    private String content;
 }

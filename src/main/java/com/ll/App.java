@@ -6,11 +6,11 @@ import java.util.Scanner;
 
 public class App {
 
-    Scanner scanner;
-    int quoteID;
-    List<Quotation> quotations;
+    private Scanner scanner;
+    private int quoteID;
+    private List<Quotation> quotations;
 
-    App(){
+    public App(){
         scanner = new Scanner(System.in);
         quoteID = 0;
         quotations = new ArrayList<>();
@@ -23,8 +23,9 @@ public class App {
         while (true) {
             System.out.print("명령) ");
             String cmd = scanner.nextLine();
+            Rq rq = new Rq(cmd);
 
-            switch (cmd){
+            switch (rq.getAction()){
                 case "종료":
                     return;
                 case "등록":
@@ -33,11 +34,14 @@ public class App {
                 case "목록":
                     show();
                     break;
+                case "삭제":
+                    delete(rq);
+                    break;
             }
         }
     }
 
-    void write(){
+    private void write(){
         System.out.print("명언 : ");
         String content = scanner.nextLine();
         System.out.print("작가 : ");
@@ -47,7 +51,7 @@ public class App {
         quotations.add(quotation);
         System.out.printf("%d번 명언이 등록되었습니다.\n", quoteID);
     }
-    void show(){
+    private void show(){
 
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
@@ -61,5 +65,35 @@ public class App {
             Quotation quotation = quotations.get(i);
             System.out.printf("%d / %s / %s\n", quotation.getQuoteID(), quotation.getWriter(), quotation.getContent());
         }
+    }
+
+    private void delete(Rq rq) {
+        int QuoteID = rq.getParamAsInt("id", 0);
+
+        if (QuoteID == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+        }
+        int index = findQuoteIndexById(QuoteID);
+
+        if (index == -1) {
+            System.out.printf("%d번 명언은 존재하지 않습니다.\n", QuoteID);
+            return;
+        }
+
+        quotations.remove(index);
+
+        System.out.printf("%d번 명언을 삭제되었습니다.\n", QuoteID);
+    }
+
+    private int findQuoteIndexById(int QuoteID) {
+        for (int i = 0; i < quotations.size(); i++) {
+            Quotation quotation = quotations.get(i);
+
+            if (quotation.getQuoteID() == QuoteID) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
