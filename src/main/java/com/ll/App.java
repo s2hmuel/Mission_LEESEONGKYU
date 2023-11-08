@@ -1,5 +1,7 @@
 package com.ll;
 
+import com.google.gson.Gson;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -46,9 +49,13 @@ public class App {
                     break;
                 case "수정":
                     edit(rq);
+                case "빌드":
+                    createJsonData();
+                    break;
             }
         }
     }
+
 
     private void write(){
         System.out.print("명언 : ");
@@ -128,7 +135,6 @@ public class App {
         quotation.setWriter(writer);
         System.out.printf("%d번 명언을 수정되었습니다.\n", quoteID);
     }
-
     private void readTextFile() {
 
         String filePath = "/Users/s2hmuel/Documents/quotation.txt";
@@ -173,5 +179,19 @@ public class App {
     private void fileToQuotation(int quoteID, String writer, String content){
         Quotation quotation = new Quotation(quoteID, writer, content);
         quotations.add(quotation);
+    }
+
+    private void createJsonData(){
+        Gson gson = new Gson();
+        String filePath = "/Users/s2hmuel/Documents/data.json";
+        try (FileWriter fileWriter = new FileWriter((filePath))) {
+            for (int i = 0; i < quotations.size(); i++) {
+                Quotation quotation = quotations.get(i);
+                gson.toJson(quotation, fileWriter);
+            }
+            System.out.println("data.json 파일의 내용이 갱신되었습니다.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
